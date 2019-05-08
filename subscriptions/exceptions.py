@@ -1,0 +1,3 @@
+class BillingPeriodAlreadyExists(Exception):
+    pass
+
