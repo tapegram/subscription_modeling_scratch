@@ -1,10 +1,11 @@
 import attr
 import arrow
+import uuid
 
 from .billing_period import (
     BillingPeriod,
 )
-from .customer import Customer
+from .customer_id import CustomerID
 from .exceptions import (
     BillingPeriodAlreadyExists,
 )
@@ -16,35 +17,15 @@ from .plan import (
 )
 
 
+@attr.s(frozen=True)
+class SubscriptionID:
+    id: uuid.UUID = attr.ib()
+
 
 @attr.s(frozen=True)
 class Subscription:
+    id: SubscriptionID = attr.ib()
     current_billing_period: BillingPeriod = attr.ib()
-    customer: Customer = attr.ib()
+    customer_id: CustomerID = attr.ib()
     plan: Plan = attr.ib()
-
-    def bill(self):
-        now = arrow.utcnow()
-
-        if (
-                self.current_billing_period
-                and self.current_billing_period.includes(
-                    now,
-                )
-        ):
-            raise BillingPeriodAlreadyExists
-
-        payment = self.plan.create_payment(
-            self.customer,
-        )
-
-        payment.capture()
-
-        return attr.evolve(
-            self,
-            current_billing_period=BillingPeriod(
-                start=now,
-                end=now.shift(months=+1),
-                payment=payment,
-            )
-        )
+    expires_on: arrow.Arrow = attr.ib()
