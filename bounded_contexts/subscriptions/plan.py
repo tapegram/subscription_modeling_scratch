@@ -1,4 +1,5 @@
 import attr
+import uuid
 
 from .money import Money
 
@@ -17,6 +18,3 @@ class Monthly(Interval):
 class Plan:
     amount: Money = attr.ib()
     interval: Interval = attr.ib()
-
-
-
