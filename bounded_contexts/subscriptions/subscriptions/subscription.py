@@ -16,6 +16,7 @@ from .plan import (
 )
 
 
+
 @attr.s(frozen=True)
 class Subscription:
     current_billing_period: BillingPeriod = attr.ib()
